@@ -156,7 +156,7 @@ bool s3fs_init_crypt_mutex()
   }
   // static lock
   CRYPTO_set_locking_callback(s3fs_crypt_mutex_lock);
-  CRYPTO_set_id_callback(s3fs_crypt_get_threadid);
+  CRYPTO_THREADID_set_callback(s3fs_crypt_get_threadid);
   // dynamic lock
   CRYPTO_set_dynlock_create_callback(s3fs_dyn_crypt_mutex);
   CRYPTO_set_dynlock_lock_callback(s3fs_dyn_crypt_mutex_lock);
@@ -174,7 +174,7 @@ bool s3fs_destroy_crypt_mutex()
   CRYPTO_set_dynlock_destroy_callback(NULL);
   CRYPTO_set_dynlock_lock_callback(NULL);
   CRYPTO_set_dynlock_create_callback(NULL);
-  CRYPTO_set_id_callback(NULL);
+  CRYPTO_THREADID_set_callback(NULL);
   CRYPTO_set_locking_callback(NULL);
 
   for(int cnt = 0; cnt < CRYPTO_num_locks(); cnt++){
