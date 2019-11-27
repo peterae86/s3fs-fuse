@@ -102,6 +102,10 @@ static unsigned long s3fs_crypt_get_threadid()
   return (unsigned long)(pthread_self());
 }
 
+void ssl_threadid_function_callback(CRYPTO_THREADID* id) {
+    CRYPTO_THREADID_set_numeric(id, (unsigned long)pthread_self());
+}
+
 static struct CRYPTO_dynlock_value* s3fs_dyn_crypt_mutex(const char* file, int line) __attribute__ ((unused));
 static struct CRYPTO_dynlock_value* s3fs_dyn_crypt_mutex(const char* file, int line)
 {
@@ -156,7 +160,7 @@ bool s3fs_init_crypt_mutex()
   }
   // static lock
   CRYPTO_set_locking_callback(s3fs_crypt_mutex_lock);
-  CRYPTO_THREADID_set_callback(s3fs_crypt_get_threadid);
+  CRYPTO_THREADID_set_callback(ssl_threadid_function_callback);
   // dynamic lock
   CRYPTO_set_dynlock_create_callback(s3fs_dyn_crypt_mutex);
   CRYPTO_set_dynlock_lock_callback(s3fs_dyn_crypt_mutex_lock);
